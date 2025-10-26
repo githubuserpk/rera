@@ -2,7 +2,7 @@ import streamlit as st
 import base64
 import os
 
-import utils.aiguard_utils as aiguard_utils
+import utils.rera_utils as rera_utils
 
 st.set_page_config(layout="wide", initial_sidebar_state="expanded")
 
@@ -18,7 +18,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-#Moved this to aiguard utils module
+#Moved this to rera utils module
 # def get_image_base64(image_path):
 #     with open(image_path, "rb") as img_file:
 #         return base64.b64encode(img_file.read()).decode('utf-8')
@@ -109,7 +109,7 @@ def main():
 
     # Company name
     #st.markdown('<div class="company-name" style="margin-bottom: 2px;">AIGard</div>', unsafe_allow_html=True)
-    #st.markdown('<div class="company-name" style="margin-bottom: 1px; border: 2px solid red;">AIGuard</div>', unsafe_allow_html=True)
+    #st.markdown('<div class="company-name" style="margin-bottom: 1px; border: 2px solid red;">Rera</div>', unsafe_allow_html=True)
 
 
     # Header with custom margin
@@ -139,10 +139,10 @@ def main():
 
     # Get the base64 string of the images
     #image_path = "gemini-image.jpg"  # Adjust this path as needed
-    image_path = "images/aiguardx.jpg"  # Adjust this path as needed
-    img_base64 = aiguard_utils.get_image_base64(image_path)
+    image_path = "images/rerax.jpg"  # Adjust this path as needed
+    img_base64 = rera_utils.get_image_base64(image_path)
     image1_path = "images/EU-AI-Act.png"
-    img1_base64 = aiguard_utils.get_image_base64(image1_path)
+    img1_base64 = rera_utils.get_image_base64(image1_path)
 
     st.markdown("""
         <div style="background-color: #333333; color: white; text-align: center; padding: 3px; border-radius: 10px;">
@@ -198,7 +198,7 @@ def main():
 
         #image_path = "aigovernance.jpg"  # Replace with your image path
         image_path = "images/aigovernance.jpg"  # Replace with your image path        
-        img_base64 = aiguard_utils.get_image_base64(image_path)
+        img_base64 = rera_utils.get_image_base64(image_path)
 
         st.markdown(f"""
             <a href="AI_Governance" target="_self" style="text-decoration: none; color: inherit;">
