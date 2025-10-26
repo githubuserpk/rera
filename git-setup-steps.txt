@@ -1,0 +1,56 @@
+cd c:\rera_app 
+
+C:\rera_app>dir
+ Volume in drive C is Windows
+ Volume Serial Number is B2BF-18EB
+
+
+C:\rera_app>git clone https://github.com/githubuserpk/rera.git
+Cloning into 'rera'...
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Receiving objects: 100% (3/3), done.
+
+C:\rera_app>cd rera
+
+C:\rera_app\rera>dir
+ Volume in drive C is Windows
+ Volume Serial Number is B2BF-18EB
+
+ Directory of C:\rera_app\rera
+
+26/10/2025  10:59    <DIR>          .
+26/10/2025  10:59    <DIR>          ..
+26/10/2025  10:59             4,895 .gitignore
+               1 File(s)          4,895 bytes
+               2 Dir(s)  254,392,307,712 bytes free
+
+C:\rera_app\rera>git remote -v
+origin  https://github.com/githubuserpk/rera.git (fetch)
+origin  https://github.com/githubuserpk/rera.git (push)
+
+C:\rera_app\rera>git branch
+* main
+
+C:\rera_app\rera>echo "# test file" >> gittest.txt
+
+C:\rera_app\rera>git add .
+
+C:\rera_app\rera>git commit -m "first commit"
+[main 4e599a8] first commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 gittest.txt
+
+C:\rera_app\rera>git push
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 300 bytes | 300.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/githubuserpk/rera.git
+   7e1b4c2..4e599a8  main -> main
+
+
