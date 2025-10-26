@@ -1,9 +1,9 @@
 name: Build and Deploy
 
 env:
-  AR_REPO: aiguard-repo
+  AR_REPO: rera-repo
   GCP_REGION: us-central1
-  SERVICE_NAME: aiguard-app
+  SERVICE_NAME: rera-app
 
 on:
   push:
@@ -84,9 +84,9 @@ jobs:
     - name: Deploy to Cloud Run
       if: steps.check_flag.outputs.should_deploy == 'true'
       run: |
-        gcloud run deploy aiguard-app \
+        gcloud run deploy rera-app \
           --port=8080 \
-          --image="us-central1-docker.pkg.dev/pk-aiproject/aiguard-repo/aiguard-app" \
+          --image="us-central1-docker.pkg.dev/pk-aiproject/rera-repo/rera-app" \
           --platform=managed \
           --region="us-central1" \
           --project="pk-aiproject" \
@@ -99,5 +99,5 @@ jobs:
       if: steps.check_flag.outputs.should_deploy == 'true'
       run: |
         URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region ${{secrets.GCP_REGION}} --format="value(status.url)")
-        echo $URL | gsutil -h "Content-Type:text/plain" cp - gs://bkt-aiguard/latest_release.txt
-        gsutil acl ch -u AllUsers:R gs://bkt-aiguard/latest_release.txt
+        echo $URL | gsutil -h "Content-Type:text/plain" cp - gs://bkt-rera/latest_release.txt
+        gsutil acl ch -u AllUsers:R gs://bkt-rera/latest_release.txt
