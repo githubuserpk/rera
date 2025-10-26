@@ -1,0 +1,217 @@
+import streamlit as st
+import base64
+import os
+
+import utils.aiguard_utils as aiguard_utils
+
+st.set_page_config(layout="wide", initial_sidebar_state="expanded")
+
+# Create a custom CSS style for the submenus
+# not seeing any changes in UI, will look into it later
+st.markdown("""
+<style>
+.st-bn {
+    font-weight: bold;
+    font-size: 1.2rem; /* Adjust font size as needed */
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+#Moved this to aiguard utils module
+# def get_image_base64(image_path):
+#     with open(image_path, "rb") as img_file:
+#         return base64.b64encode(img_file.read()).decode('utf-8')
+
+def add_footer():
+    """Adds a custom footer to the Streamlit app."""
+    st.markdown("---")  # Add a horizontal rule for visual separation
+    st.markdown(
+        """
+        <style>
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #f0f0f0;
+            color: #666;
+            text-align: center;
+            padding: 10px 0;
+        }
+        </style>
+        <div class="footer">
+            &copy; 2024 AIGard | All Rights Reserved
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+   
+
+def main():
+
+    # Custom CSS for a white background theme
+    st.markdown("""
+    <style>
+        .stApp {
+            background-color: #FFFFFF;  /* White background */
+            color: #000000;              /* Black text */
+        }
+        .reportview-container {
+            background-color: #FFFFFF;   /* Same white background */
+            color: #000000;               /* Black text */
+        }
+        .sidebar .sidebar-content {
+            background-color: #F0F0F0;    /* Light gray sidebar */
+        }
+        .stButton>button {
+            background-color: black;       /* Black button */
+            color: white;                  /* White text on button */
+            border: 2px solid white;       /* Light thin white border */
+        }
+        .stTextInput>div>div>input {
+            background-color: #E0E0E0;     /* Light gray input fields */
+            color: #000000;                /* Black text in input fields */
+        }
+        .company-name {
+            font-size: 60px;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px 0;
+            color: #333;
+            margin-top: -70px;  # Adjust this value as needed
+        }     
+
+        .para-text {
+            font-size: 20px; /* Increase page title font size */
+            font-weight: normal; 
+            text-align: left; 
+            color: #333; /* Adjust color as needed */
+        }                             
+        
+    </style>
+    """, unsafe_allow_html=True)
+
+
+    # Reduce whitespace at the top of the page using CSS
+    st.markdown("""
+    <style>
+    .block-container {
+        padding-top: 0rem; /* Remove top padding */
+        margin-top: -0.5rem; /* Adjust negative margin as needed */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.image("images/gcaig_logo.jpg", width=80) 
+
+
+    # Company name
+    #st.markdown('<div class="company-name" style="margin-bottom: 2px;">AIGard</div>', unsafe_allow_html=True)
+    #st.markdown('<div class="company-name" style="margin-bottom: 1px; border: 2px solid red;">AIGuard</div>', unsafe_allow_html=True)
+
+
+    # Header with custom margin
+    st.markdown('<h1 style="margin-top: -30px; margin-bottom: 10px;">AIGuard - Building Trustworthy AI Systems</h1>', unsafe_allow_html=True)
+
+
+
+    # Call the function to add the footer
+    add_footer()
+
+
+    st.sidebar.title("Main Page")
+    st.logo("images/gcaig_logo.jpg", size="large")
+  
+    version = st.secrets["version"]
+    message = st.secrets["message1"]
+    temperature = st.secrets["Temperature"]
+    lastrefreshdate = st.secrets["Lastrefreshdate"]
+    release_version = st.secrets["release_version"]
+
+    st.sidebar.markdown(f"**Demo Version:** {version}")
+    st.sidebar.markdown(f"**Last Refreshed Date (from EU AI Act Website):** {lastrefreshdate}")
+    st.sidebar.markdown(f"**Release:** {release_version}")
+
+    st.markdown('<p class="para-text">AI can be a force for Good - turning this dream into a reality by focussing on AI Safety.  Bulletproofing AI with Guardrails and Safeguards to make AI safe and prevent misuse</p>', unsafe_allow_html=True)
+         
+
+    # Get the base64 string of the images
+    #image_path = "gemini-image.jpg"  # Adjust this path as needed
+    image_path = "images/aiguardx.jpg"  # Adjust this path as needed
+    img_base64 = aiguard_utils.get_image_base64(image_path)
+    image1_path = "images/EU-AI-Act.png"
+    img1_base64 = aiguard_utils.get_image_base64(image1_path)
+
+    st.markdown("""
+        <div style="background-color: #333333; color: white; text-align: center; padding: 3px; border-radius: 10px;">
+            <h1 style="margin: 0; font-size: 24px; line-height: 1.2; color: white;">Welcome to Our AI Solutions</h1>
+            <p style="margin: 3px 0; font-size: 14px; line-height: 1.2; color: white;">
+                Explore our innovative tools and resources
+            </p>
+        </div>
+        <br>  <!-- Line break for spacing -->
+    """, unsafe_allow_html=True)
+
+
+
+    # Create two columns
+    col1, col2, col3 = st.columns(3)
+
+
+    # Set a fixed height for the boxes
+    box_height = "400px"
+
+    # Card 1
+    with col1:
+        st.markdown(f"""
+            <a href="EU_AI_ACT_Advanced_Search" target="_self" style="text-decoration: none; color: inherit;">
+                <div style="border: 2px solid blue; padding: 0; border-radius: 10px; height: {box_height}; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; cursor: pointer;">
+                    <img src="data:image/jpeg;base64,{img1_base64}" alt="PaliGemma 2 Image" style="width: 100%; height: 230px; object-fit: cover; margin: 0;">
+                    <div style="padding: 15px;">
+                        <h3 style="margin: 10px 0;">EU AI Act Advanced Search</h3>
+                    </div>
+                </div>
+            </a>
+        """, unsafe_allow_html=True)
+
+
+    # Card 2
+    with col2:
+        st.markdown(f"""
+            <a href="AI_Safety" target="_self" style="text-decoration: none; color: inherit;">
+                <div style="border: 2px solid blue; padding: 0; border-radius: 10px; height: {box_height}; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; cursor: pointer;">
+                    <img src="data:image/jpeg;base64,{img_base64}" alt="Gemini API Image" style="width: 100%; height: 230px; object-fit: cover; margin:0;">
+                    <div style="padding: 15px;">
+                        <h3 style="margin: 10px 0;">AI Safety and Guardrails</h3>
+                    </div>
+                </div>
+            </a>
+        """, unsafe_allow_html=True)
+
+
+    # Card 3 (Slideshow)
+    with col3:
+        if 'slide_index_col3' not in st.session_state:
+            st.session_state.slide_index_col3 = 0
+
+        #image_path = "aigovernance.jpg"  # Replace with your image path
+        image_path = "images/aigovernance.jpg"  # Replace with your image path        
+        img_base64 = aiguard_utils.get_image_base64(image_path)
+
+        st.markdown(f"""
+            <a href="AI_Governance" target="_self" style="text-decoration: none; color: inherit;">
+                <div style="border: 2px solid blue; padding: 0; border-radius: 10px; height: {box_height}; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; cursor: pointer;">
+                    <img src="data:image/jpeg;base64,{img_base64}" alt="Slideshow Image" style="width: 100%; height: 230px; object-fit: cover; margin: 0;">
+                    <div style="padding: 15px;">
+                        <h3 style="margin: 10px 0;">AI Adoption & Governance</h3>
+                    </div>
+                </div>
+            </a>
+        """, unsafe_allow_html=True)
+
+
+if __name__ == "__main__":
+    main()
+ 

@@ -1,0 +1,11 @@
+Recital 142 Text:
+To ensure that AI leads to socially and environmentally beneficial outcomes, Member States are encouraged to support and promote research and development of AI solutions in support of socially and environmentally beneficial outcomes, such as AI-based solutions to increase accessibility for persons with disabilities, tackle socio-economic inequalities, or meet environmental targets, by allocating sufficient resources, including public and Union funding, and, where appropriate and provided that the eligibility and selection criteria are fulfilled, considering in particular projects which pursue such objectives. Such projects should be based on the principle of interdisciplinary cooperation between AI developers, experts on inequality and non-discrimination, accessibility, consumer, environmental, and digital rights, as well as academics.
+
+Related Articles:
+Article 57: AI Regulatory Sandboxes: https://artificialintelligenceact.eu/article/57/
+Article 58: Detailed Arrangements for, and Functioning of, AI Regulatory Sandboxes: https://artificialintelligenceact.eu/article/58/
+Article 59: Further Processing of Personal Data for Developing Certain AI Systems in the Public Interest in the AI Regulatory Sandbox: https://artificialintelligenceact.eu/article/59/
+Article 60: Testing of High-Risk AI Systems in Real World Conditions Outside AI Regulatory Sandboxes: https://artificialintelligenceact.eu/article/60/
+Article 61: Informed Consent to Participate in Testing in Real World Conditions Outside AI Regulatory Sandboxes: https://artificialintelligenceact.eu/article/61/
+Article 62: Measures for Providers and Deployers, in Particular SMEs, Including Start-Ups: https://artificialintelligenceact.eu/article/62/
+Article 63: Derogations for Specific Operators: https://artificialintelligenceact.eu/article/63/

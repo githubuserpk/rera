@@ -1,0 +1,5 @@
+Recital 79 Text:
+It is appropriate that a specific natural or legal person, defined as the provider, takes responsibility for the placing on the market or the putting into service of a high-risk AI system, regardless of whether that natural or legal person is the person who designed or developed the system.
+
+Related Articles:
+Article 16: Obligations of Providers of High-Risk AI Systems: https://artificialintelligenceact.eu/article/16/

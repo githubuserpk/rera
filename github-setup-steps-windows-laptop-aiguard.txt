@@ -1,0 +1,70 @@
+C:\pk\gcp\genai>cd aiguard
+The system cannot find the path specified.
+
+C:\pk\gcp\genai>md aiguard
+
+C:\pk\gcp\genai>cd aiguard
+
+C:\pk\gcp\genai\aiguard>echo "# aiguard" >> README.md
+
+C:\pk\gcp\genai\aiguard>git init
+Initialized empty Git repository in C:/pk/gcp/genai/aiguard/.git/
+
+C:\pk\gcp\genai\aiguard>git add README.md
+
+C:\pk\gcp\genai\aiguard>git commit -m "first commit"
+[master (root-commit) e978bad] first commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+
+C:\pk\gcp\genai\aiguard>git branch -M main
+
+C:\pk\gcp\genai\aiguard>git remote add origin https://github.com/githubuserpk/aiguard.git
+
+C:\pk\gcp\genai\aiguard>git push -u origin main
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 233 bytes | 233.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/githubuserpk/aiguard.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+
+C:\pk\gcp\genai\aiguard>git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+
+C:\pk\gcp\genai\aiguard>git branch
+* main
+
+C:\pk\gcp\genai\aiguard>
+C:\pk\gcp\genai\aiguard>touch .gitignore
+'touch' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\pk\gcp\genai\aiguard>echo. > .gitignore
+
+C:\pk\gcp\genai\aiguard>git add .gitignore
+
+C:\pk\gcp\genai\aiguard>git commit -m "Add .gitignore to exclude venv"
+[main ebca190] Add .gitignore to exclude venv
+ 1 file changed, 2 insertions(+)
+ create mode 100644 .gitignore
+
+C:\pk\gcp\genai\aiguard>
+C:\pk\gcp\genai\aiguard>git push -u origin main
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 336 bytes | 336.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/githubuserpk/aiguard.git
+   e978bad..ebca190  main -> main
+branch 'main' set up to track 'origin/main'.
+
+C:\pk\gcp\genai\aiguard>
+
+

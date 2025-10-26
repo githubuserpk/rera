@@ -1,0 +1,130 @@
+# in this file we have steps to externalise the company search api key that needs to be present 
+# in /aiguard_app/.env 
+
+# deploy.yml from /aiguard.github/workflows 
+
+name: Update AiGuard Deploy Log
+
+env:
+  AR_REPO: aiguard-repo
+  GCP_REGION: us-central1
+  SERVICE_NAME: aiguard-app
+
+
+on:
+    push:
+      branches:
+        - main  # Deploy only when code is pushed to the main branch
+
+jobs:
+  update-deploy-log:
+    runs-on: ubuntu-latest
+
+
+    steps:  
+    - name: 'Checkout repository'
+      uses: actions/checkout@v2
+
+
+    - name: Google Cloud Auth
+      uses: 'google-github-actions/auth@v2'
+
+      with:
+        credentials_json: '${{ secrets.GCP_GHA_SA_KEY }}'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}    
+
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+
+    - name: Configure Docker
+      run: |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+
+    - name: Create Artifact Registry Repository
+      run: |
+        if ! gcloud artifacts repositories describe ${{ env.AR_REPO }} --location=us-central1 --project=${{ secrets.GCP_PROJECT_ID }}; then
+        gcloud artifacts repositories create ${{ env.AR_REPO }} \
+            --repository-format=docker \
+            --location=us-central1 \
+            --project=${{ secrets.GCP_PROJECT_ID }}
+        else
+        echo "Repository already exists"
+        fi
+
+    #API_KEY is the company search API KEY    
+    - name: 'Build and Push Docker Image'
+      env:
+        IMAGE_NAME: "${{secrets.GCP_REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.SERVICE_NAME }}"
+      run: |
+             gcloud builds submit \
+             --config=cloudbuild.yaml \
+             --substitutions=_IMAGE_NAME=$IMAGE_NAME,_API_KEY=${{ secrets.API_KEY }}           
+
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy aiguard-app \
+            --port=8080 \
+            --image="$IMAGE_NAME" \  # Use the same image name from build step
+            --platform=managed \
+            --region="us-central1" \
+            --project="pk-aiproject" \
+            --allow-unauthenticated \
+            --set-env-vars=GCP_PROJECT=pk-aiproject,GCP_REGION=us-central1 \
+            --min-instances=0    
+
+
+    - name: Get the url
+      run: |
+        gcloud run services describe ${{ env.SERVICE_NAME }} --region ${{secrets.GCP_REGION}} --format="value(status.url)"
+
+
+    # - name: Delete Cloud Run Image
+    #   run: |
+    #     gcloud artifacts docker images delete "us-central1-docker.pkg.dev/pk-aiproject/aiguard-repo/aiguard-app" --delete-tags --quiet
+
+
+
+
+# cloudbuild.yaml in application folder /aiguard
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t', '$_IMAGE_NAME',
+    '--build-arg', 'API_KEY=${_API_KEY}',
+    '.'
+  ]
+images: ['$_IMAGE_NAME']
+
+# Dockerfile for comp search externalise
+FROM python:3.12
+
+# Create the parent directory first
+RUN mkdir -p /aiguard_app/aiguard
+
+ARG API_KEY    # No underscore here
+RUN echo "API_KEY=${API_KEY}" > /aiguard_app/.env
+
+# Create the data directories
+RUN mkdir -p /aiguard_app/datalake/data_sources/annexes /aiguard_app/datalake/data_sources/recitals
+
+# Set the working directory after creating all directories
+WORKDIR /aiguard_app/aiguard
+
+# Copy files while maintaining the directory structure
+COPY ./datalake/data_sources/annexes/a*.txt /aiguard_app/datalake/data_sources/annexes/
+COPY ./datalake/data_sources/recitals/r*.txt /aiguard_app/datalake/data_sources/recitals/
+COPY ./datalake/data_sources/eu-ai-act-full_regulation_text_ENG.pdf /aiguard_app/datalake/data_sources/
+
+EXPOSE 8080
+
+# Copy application files
+COPY . ./
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+ENTRYPOINT ["sh", "-c", "python search_api.py & streamlit run Main.py --server.port=8080 --server.address=0.0.0.0"]

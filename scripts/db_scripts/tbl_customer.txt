@@ -1,0 +1,29 @@
+CREATE TABLE ai_services 
+(
+	service_id INTEGER PRIMARY KEY, 
+	service_name TEXT not null
+);
+
+
+CREATE TABLE customer 
+(
+	id INTEGER PRIMARY KEY, 
+	name TEXT, 
+	email TEXT, 
+	location TEXT, --based in EU, based in UK
+	company_number INTEGER, 
+	no_employees INTEGER,
+	annual_revenue REAL
+	ai_role TEXT,	-- Provider, Deployer, Distributor, Importer 
+	model_type TEXT,-- open, closed 
+	model_name TEXT, -- chat gpt, gemini
+	fine_tuning TEXT, -- yes, no
+	fine_tuning_type TEXT, -- lora, qlora, rlhf, sft	
+	service_type INTEGER,
+	FOREIGN KEY (service_id) REFERENCES ai_services (service_id)
+);
+
+INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com');
+SELECT * FROM users;
+
+

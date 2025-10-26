@@ -1,0 +1,40 @@
+C:\aiguard_app\aiguard>echo "# test file" >> readme.txt
+
+C:\aiguard_app\aiguard>git add readme.txt
+
+C:\aiguard_app\aiguard>git commit -m "readme txt file commit"
+[main 6890e9a] readme txt file commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 readme.txt
+
+C:\aiguard_app\aiguard>git push -u origin main
+To https://github.com/githubuserpk/aiguard.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/githubuserpk/aiguard.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+C:\aiguard_app\aiguard>git pull origin main
+From https://github.com/githubuserpk/aiguard
+ * branch            main       -> FETCH_HEAD
+fatal: refusing to merge unrelated histories
+
+To resolve this issue I did the following: 
+C:\aiguard_app\aiguard>git pull origin main --allow-unrelated-histories
+From https://github.com/githubuserpk/aiguard
+ * branch            main       -> FETCH_HEAD
+Merge made by the 'ort' strategy.
+ .gitignore                                    |  2 +
+ github-setup-steps-windows-laptop-aiguard.txt | 70 +++++++++++++++++++++++++++
+ 2 files changed, 72 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 github-setup-steps-windows-laptop-aiguard.txt
+
+
+unix refresh files
+===================
+cd aiguard
+git fetch origin
+git merge origin/main

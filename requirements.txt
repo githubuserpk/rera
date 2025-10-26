@@ -1,0 +1,35 @@
+flask
+flask-cors
+
+google-cloud-aiplatform
+google-cloud-core
+grpcio
+
+langchain-community
+langchain-text-splitters
+pypdf
+
+chromadb
+
+langchain-google-genai
+
+#for google-emb
+google-generativeai
+streamlit
+streamlit-option-menu
+
+beautifulsoup4 
+requests 
+
+plotly 
+mammoth
+
+
+#Guardrails AI
+
+#guardrails-ai
+
+# grpcio
+# pdfminer.six
+# sentence-transformers
+# lxml

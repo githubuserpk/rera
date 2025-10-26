@@ -1,0 +1,17 @@
+# delete cloud run service account 
+gcloud run services delete "$SERVICE_NAME" --region="$GCP_REGION" --platform=managed --quiet
+
+
+# delete container image from AR 
+gcloud artifacts docker images delete "$GCP_REGION-docker.pkg.dev/$GCP_PROJECT/$AR_REPO/$SERVICE_NAME" --quiet
+
+# delete AR repo
+gcloud artifacts repositories delete "$AR_REPO" --location="$GCP_REGION" --quiet
+
+# delete cloud storage related to cloud build
+gsutil rm -r gs://${GCP_PROJECT}_cloudbuild
+
+
+# delete cloud build artifacts 
+gcloud builds list --filter="source.repoSource.projectId=$GCP_PROJECT" --format="value(id)" | xargs -I {} gcloud builds delete {} --quiet
+

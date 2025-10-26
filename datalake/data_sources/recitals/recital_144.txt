@@ -1,0 +1,11 @@
+Recital 144 Text:
+In order to promote and protect innovation, the AI-on-demand platform, all relevant Union funding programmes and projects, such as Digital Europe Programme, Horizon Europe, implemented by the Commission and the Member States at Union or national level should, as appropriate, contribute to the achievement of the objectives of this Regulation.
+
+Related Articles:
+Article 57: AI Regulatory Sandboxes: https://artificialintelligenceact.eu/article/57/
+Article 58: Detailed Arrangements for, and Functioning of, AI Regulatory Sandboxes: https://artificialintelligenceact.eu/article/58/
+Article 59: Further Processing of Personal Data for Developing Certain AI Systems in the Public Interest in the AI Regulatory Sandbox: https://artificialintelligenceact.eu/article/59/
+Article 60: Testing of High-Risk AI Systems in Real World Conditions Outside AI Regulatory Sandboxes: https://artificialintelligenceact.eu/article/60/
+Article 61: Informed Consent to Participate in Testing in Real World Conditions Outside AI Regulatory Sandboxes: https://artificialintelligenceact.eu/article/61/
+Article 62: Measures for Providers and Deployers, in Particular SMEs, Including Start-Ups: https://artificialintelligenceact.eu/article/62/
+Article 63: Derogations for Specific Operators: https://artificialintelligenceact.eu/article/63/

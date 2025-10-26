@@ -1,0 +1,62 @@
+# This script does a one time creation of service account key and assigns the permissions
+# This is used in github actions
+
+export SERVICE_ACCOUNT_NAME=gcp-gha-sa-key
+export GCP_PROJECT_ID=pk-aiproject
+
+gcloud iam service-accounts create $SERVICE_ACCOUNT_NAME \
+  --description="Service account for GitHub Actions deployment" \
+  --display-name="GitHub Actions Service Account"
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/run.admin"
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.admin"
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser"
+
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
+    --role=roles/storage.objectAdmin
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/serviceusage.serviceUsageConsumer"
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/cloudbuild.builds.editor"
+
+# need to lock down the permissions bit more
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/editor"
+
+gcloud iam service-accounts keys create gcp-gha-sa-key.json \
+  --iam-account=$SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com
+
+
+
+
+
+
+# get the list of IAM permissions assigned to the service account
+gcloud iam service-accounts get-iam-policy $SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com
+
+
+
+Under actions secrets and variables in github add 3 secrets
+GCP_GHA_SA_KEY  paste the sa key json contents
+GCP_PROJECT_ID type the value pk-aiproject
+GCP_REGION type the value us-central1
+
+
+# create a signed url that is valid for one year
+gsutil cp gs://bkt-aiguard/aiguard-deploy-log.txt temp.txt
+date -u "+%Y-%m-%dT%H:%M:%S%z" >> temp.txt

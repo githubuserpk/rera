@@ -1,0 +1,80 @@
+# readme nginx mount new all steps 
+
+# enable required services
+gcloud services enable \
+    run.googleapis.com \
+    artifactregistry.googleapis.com \
+    cloudbuild.googleapis.com \
+    storage.googleapis.com
+
+# create bucket
+BUCKET_NAME="aiguard-nginx-config-bucket"
+
+gcloud storage buckets create gs://$BUCKET_NAME --location=us-central1
+
+
+# create nginx.conf config file 
+
+cat <<EOF > nginx.conf
+events {}
+
+http {
+    server {
+        listen 8080;
+        location / {
+            return 200 "Hello from Cloud Run with externalized NGINX configuration!";
+            add_header Content-Type text/plain;
+        }
+    }
+}
+EOF
+
+
+# copy nginx.conf config file to gcs bucket
+
+gcloud storage cp nginx.conf gs://$BUCKET_NAME/nginx.conf
+
+
+# create Dockerfile
+
+# Use Debian-based NGINX image
+FROM nginx:stable
+
+# Install dependencies and GCS Fuse
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    lsb-release \
+    && echo "deb http://packages.cloud.google.com/apt gcsfuse-`lsb_release -c -s` main" | tee /etc/apt/sources.list.d/gcsfuse.list \
+    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+    && apt-get update && apt-get install -y gcsfuse fuse \
+    && apt-get clean
+
+# Create mount point for GCS Fuse
+RUN mkdir -p /mnt/gcs
+
+# Copy service account key (if required for local testing)
+# COPY secrets/user-sa-key.json /etc/secrets/
+
+# Update NGINX to look for configuration in the mounted bucket
+CMD ["sh", "-c", "gcsfuse aiguard-nginx-config-bucket /mnt/gcs && nginx -c /mnt/gcs/nginx.conf -g 'daemon off;'"]
+
+
+
+# build and push docker image
+
+gcloud auth configure-docker us-central1-docker.pkg.dev
+gcloud builds submit --tag us-central1-docker.pkg.dev/pk-aiproject/nginx-repo/nginx-mount .
+
+
+# add iam permission
+
+
+gcloud projects add-iam-policy-binding pk-aiproject \
+    --member="serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
+    --role="roles/storage.admin"
+
+
+
+
+

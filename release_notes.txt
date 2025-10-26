@@ -1,0 +1,11 @@
+v25: updated Legal disclaimer
+v24: removed cloudbuild.yaml file as it is not used
+     removed .env copy in Docker as it is handled in the workflow
+     removed cicd.sh as it is not being used anymore, it is handled in the workflow
+
+v21: added AI Adoption Guide
+v20: added footer
+v19-20250102-0944: AI Gov Essentials blog added 
+v18-20250101-1402: Added v10 screenshots   Added separate page for release notes 
+v17-20250101-1132: Added linkedin page on About us page
+v16:               refreshed git hub token 

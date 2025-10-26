@@ -1,0 +1,6 @@
+docker run -it --entrypoint=/bin/sh us-central1-docker.pkg.dev/pk-aiproject/aiguard-repo/aiguard-app
+
+docker ps -a
+
+docker rm -f 423e4df590d8
+

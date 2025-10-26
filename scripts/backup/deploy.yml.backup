@@ -1,0 +1,117 @@
+name: Update AiGuard Deploy Log
+
+env:
+  AR_REPO: aiguard-repo
+  GCP_REGION: us-central1
+  SERVICE_NAME: aiguard-app
+
+
+on:
+    push:
+      branches:
+        - main  # Deploy only when code is pushed to the main branch
+
+jobs:
+  update-deploy-log:
+    runs-on: ubuntu-latest
+
+
+    steps:  
+    - name: 'Checkout repository'
+      uses: actions/checkout@v2
+
+
+    - name: Google Cloud Auth
+      uses: 'google-github-actions/auth@v2'
+
+      with:
+        credentials_json: '${{ secrets.GCP_GHA_SA_KEY }}'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}    
+
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+
+    - name: Configure Docker
+      run: |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+
+    - name: Create Artifact Registry Repository
+      run: |
+        if ! gcloud artifacts repositories describe ${{ env.AR_REPO }} --location=us-central1 --project=${{ secrets.GCP_PROJECT_ID }}; then
+        gcloud artifacts repositories create ${{ env.AR_REPO }} \
+            --repository-format=docker \
+            --location=us-central1 \
+            --project=${{ secrets.GCP_PROJECT_ID }}
+        else
+        echo "Repository already exists"
+        fi
+
+    - name: 'Build and Push Docker Image'
+      run: |
+         gcloud builds submit --tag "${{secrets.GCP_REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.SERVICE_NAME }}"
+
+    - name: Deploy to Cloud Run
+      run: |
+        # gcloud run deploy ${{ env.SERVICE_NAME }} \
+        #     --port=8080 \
+        #     --image="${{secrets.GCP_REGION}}-docker.pkg.dev/${{secrets.GCP_PROJECT_ID}}/${{env.AR_REPO}}/${{env.SERVICE_NAME}}" \        
+        #     --platform=managed \
+        #     --region=us-central1 \
+        #     --project=${{secrets.GCP_PROJECT_ID}} \
+        #     --allow-unauthenticated \
+        #     --set-env-vars=GCP_PROJECT=${{secrets.GCP_PROJECT_ID}},GCP_REGION=${{secrets.GCP_REGION}} \
+        #     --min-instances=0
+
+
+        gcloud run deploy aiguard-app \
+            --port=8080 \
+            --image="us-central1-docker.pkg.dev/pk-aiproject/aiguard-repo/aiguard-app" \
+            --platform=managed \
+            --region="us-central1" \
+            --project="pk-aiproject" \
+            --allow-unauthenticated \
+            --set-env-vars=GCP_PROJECT=pk-aiproject,GCP_REGION=us-central1 \
+            --min-instances=0    
+
+
+    - name: Get the url
+      run: |
+        gcloud run services describe ${{ env.SERVICE_NAME }} --region ${{secrets.GCP_REGION}} --format="value(status.url)"
+
+
+    # - name: Delete Cloud Run Image
+    #   run: |
+    #     gcloud artifacts docker images delete "us-central1-docker.pkg.dev/pk-aiproject/aiguard-repo/aiguard-app" --delete-tags --quiet
+
+
+
+
+# ====
+# # Step 4: Build the Docker image
+# - name: Build Docker Image
+# run: |
+#   gcloud builds submit --tag "$GCP_REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/aiguard-repo/aiguard-app"
+
+# # Step 5: Deploy to Cloud Run
+# - name: Deploy to Cloud Run
+# run: |
+#   gcloud run deploy aiguard-app \
+#     --port=8080 \
+#     --image="$GCP_REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/aiguard-repo/aiguard-app" \
+#     --allow-unauthenticated \
+#     --region=${{ secrets.GCP_REGION }} \
+#     --platform=managed \
+#     --set-env-vars=GCP_PROJECT=${{ secrets.GCP_PROJECT }},GCP_REGION=${{ secrets.GCP_REGION }} \
+#     --min-instances=0
+
+# # Step 6: Output the Cloud Run URL
+# - name: Get Cloud Run URL
+# run: |
+#   gcloud run services describe aiguard-app \
+#     --region=${{ secrets.GCP_REGION }} \
+#     --platform=managed \
+#     --format="value(status.url)"
+
+# ====

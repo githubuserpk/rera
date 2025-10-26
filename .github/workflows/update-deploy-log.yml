@@ -1,0 +1,47 @@
+name: Update AiGuard Deploy Log
+
+on:
+    push:
+      branches:
+        - main  # Deploy only when code is pushed to the main branch
+
+jobs:
+  update-deploy-log:
+    runs-on: ubuntu-latest
+
+
+    steps:  
+    - name: 'Checkout repository'
+      uses: actions/checkout@v2
+
+
+    - name: Google Cloud Auth
+      uses: 'google-github-actions/auth@v2'
+
+      with:
+        credentials_json: '${{ secrets.GCP_GHA_SA_KEY }}'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}    
+
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+    # created a sorted file to write the latest release at the top of the file 
+    - name: Download or create log file
+      run: |
+        gsutil cp gs://bkt-aiguard/aiguard-deploy-log.txt ./aiguard-deploy-log.txt || echo "" > aiguard-deploy-log.txt
+
+    - name: Append new entry
+      run: |
+        echo "Deployed aiguard cloud run at: $(date -u '+%Y-%m-%d %H:%M:%S')" >> aiguard-deploy-log.txt 
+
+    - name: Sort log file by date
+      run: |
+        sort -r -k 2 aiguard-deploy-log.txt > aiguard-deploy-log-sorted.txt
+
+    - name: Upload sorted log file
+      run: |
+        gsutil cp ./aiguard-deploy-log-sorted.txt gs://bkt-aiguard/aiguard-deploy-log.txt        
+        gsutil acl ch -u AllUsers:R gs://bkt-aiguard/aiguard-deploy-log.txt 
+
+    

@@ -1,0 +1,3 @@
+insert into ai_services values(1, 'POC')
+insert into ai_services values(2, 'Personal Use - non commercial')
+insert into ai_services values(3, 'Using AI for providing commercial services in EU')

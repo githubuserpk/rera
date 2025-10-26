@@ -1,0 +1,17 @@
+sqlite3 aiguard.db
+
+.echo on -- for feedback on
+
+PRAGMA table_info(customer);  -- is equivalent of describe table
+
+
+Table structure:
+SELECT sql FROM sqlite_schema WHERE name = 'customer';
+
+.mode column
+.headers on
+pragma table_info(customer);
+
+
+Table structure with comments
+.schema customer

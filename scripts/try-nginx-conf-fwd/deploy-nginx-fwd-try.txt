@@ -1,0 +1,122 @@
+# readme new steps nginx 
+# step 1
+
+# enable services
+gcloud services enable \
+    run.googleapis.com \
+    artifactregistry.googleapis.com \
+    cloudbuild.googleapis.com
+
+
+# step 2 cleanup of the existing repo 
+# list to check the repos 
+gcloud artifacts repositories list
+
+# delete the existing repo 
+gcloud artifacts repositories delete nginx-repo --location us-central1
+
+
+# step 3 
+# create nginx-repo AR repo
+
+gcloud artifacts repositories create nginx-repo \
+    --repository-format=docker \
+    --location=us-central1 \
+    --description="Repository for NGINX images"
+
+
+
+= step 4
+# Create Docker file
+
+# Use the lightweight NGINX image
+FROM nginx:alpine
+
+# Expose port 8080 for Cloud Run
+EXPOSE 8080
+
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Update NGINX to listen on port 8080
+RUN sed -i 's/listen\s*80;/listen 8080;/g' /etc/nginx/conf.d/default.conf
+
+# Start NGINX
+CMD ["nginx", "-g", "daemon off;"]
+
+
+# add credentials to the list
+gcloud auth configure-docker us-central1-docker.pkg.dev
+
+
+# step 5
+# gcloud build 
+SERVICE_NAME='nginx-light'
+gcloud builds submit --tag "$GCP_REGION-docker.pkg.dev/$GCP_PROJECT/$AR_REPO/$SERVICE_NAME"
+
+
+# step 6
+# deploy the nginx server
+
+gcloud run deploy nginx-light \
+    --image us-central1-docker.pkg.dev/pk-aiproject/nginx-repo/nginx-light \
+    --region us-central1 \
+    --platform managed \
+    --allow-unauthenticated \
+    --port 8080
+
+
+# get the url 
+gcloud run services describe nginx-light --region us-central1 --format="value(status.url)"
+
+
+# cleanup
+# delete cloud run service account 
+gcloud run services delete "$SERVICE_NAME" --region="$GCP_REGION" --platform=managed --quiet
+
+# delete container image from AR 
+gcloud artifacts docker images delete "$GCP_REGION-docker.pkg.dev/$GCP_PROJECT/$AR_REPO/$SERVICE_NAME" --quiet
+
+
+# delete AR repo
+gcloud artifacts repositories delete "$AR_REPO" --location="$GCP_REGION" --quiet
+
+
+# delete cloud storage related to cloud build
+gsutil rm -r gs://${GCP_PROJECT}_cloudbuild
+
+
+# delete cloud build artifacts 
+gcloud builds list --filter="source.repoSource.projectId=$GCP_PROJECT" --format="value(id)" | xargs -I {} gcloud builds delete {} --quiet
+
+
+# use gcs mount to edit index.html file 
+
+# upload the file to gcs 
+
+gsutil cp index.html gs://bkt-aiguard
+
+gcloud run services update $SERVICE_NAME \
+--add-volume name=static,type=cloud-storage,bucket=bkt-aiguard \
+--add-volume-mount volume=static,mount-path='/usr/share/nginx/html'
+
+# clear volume mounts 					[ it worked ]
+gcloud beta run services update $SERVICE_NAME \
+    --clear-volumes \
+    --clear-volume-mounts
+
+
+# remove individual volume and volume mounts [ it worked ] 
+
+gcloud beta run services update $SERVICE_NAME \
+    --remove-volume static \
+    # --container=container1 \  we have only one container, no need for now, will check later
+    --remove-volume-mount '/usr/share/nginx/html' 
+
+Done!!! 
+
+
+
+
+
+
+

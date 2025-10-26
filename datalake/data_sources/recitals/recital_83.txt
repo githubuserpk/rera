@@ -1,0 +1,8 @@
+Recital 83 Text:
+In light of the nature and complexity of the value chain for AI systems and in line with the New Legislative Framework, it is essential to ensure legal certainty and facilitate the compliance with this Regulation. Therefore, it is necessary to clarify the role and the specific obligations of relevant operators along that value chain, such as importers and distributors who may contribute to the development of AI systems. In certain situations those operators could act in more than one role at the same time and should therefore fulfil cumulatively all relevant obligations associated with those roles. For example, an operator could act as a distributor and an importer at the same time.
+
+Related Articles:
+Article 22: Authorised Representatives of Providers of High-Risk AI Systems: https://artificialintelligenceact.eu/article/22/
+Article 23: Obligations of Importers: https://artificialintelligenceact.eu/article/23/
+Article 24: Obligations of Distributors: https://artificialintelligenceact.eu/article/24/
+Article 25: Responsibilities Along the AI Value Chain: https://artificialintelligenceact.eu/article/25/

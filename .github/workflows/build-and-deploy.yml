@@ -1,0 +1,103 @@
+name: Build and Deploy
+
+env:
+  AR_REPO: aiguard-repo
+  GCP_REGION: us-central1
+  SERVICE_NAME: aiguard-app
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Check Deploy Flag
+      id: check_flag
+      run: |
+        if grep -v '^#' config/build-and-deploy.txt | grep -q "build-and-deploy=yes"; then
+
+          echo "Deploy flag is set. Proceeding to build and deploy."
+          echo "should_deploy=true" >> $GITHUB_OUTPUT
+        else
+          echo "Skipping deployment. Flag not set."
+          echo "should_deploy=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Google Cloud Auth
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_GHA_SA_KEY }}'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}    
+
+    - name: 'Set up Cloud SDK'
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+    - name: Configure Docker
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      run: |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+
+    - name: Delete Artifact Registry Repository
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      run: |
+        if gcloud artifacts repositories describe ${{ env.AR_REPO }} \
+          --location=${{ env.GCP_REGION }} \
+          --project=${{ secrets.GCP_PROJECT_ID }} &> /dev/null; then
+          echo "Deleting repository ${{ env.AR_REPO }}..."
+          gcloud artifacts repositories delete ${{ env.AR_REPO }} \
+            --location=${{ env.GCP_REGION }} \
+            --project=${{ secrets.GCP_PROJECT_ID }} \
+            --quiet
+        else
+          echo "Repository ${{ env.AR_REPO }} does not exist. Skipping deletion."
+        fi
+
+    - name: Create new Artifact Registry Repository
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      run: |
+        if ! gcloud artifacts repositories describe ${{ env.AR_REPO }} --location=us-central1 --project=${{ secrets.GCP_PROJECT_ID }}; then
+          gcloud artifacts repositories create ${{ env.AR_REPO }} \
+            --repository-format=docker \
+            --location=us-central1 \
+            --project=${{ secrets.GCP_PROJECT_ID }}
+        else
+          echo "Repository already exists"
+        fi
+
+    - name: Create .env file
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      run: |
+        echo "API_KEY_LIVE=${{ secrets.API_KEY_LIVE }}" > .env
+
+    - name: 'Build and Push Docker Image'
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      run: |
+        gcloud builds submit --tag "${{secrets.GCP_REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.SERVICE_NAME }}"
+
+    - name: Deploy to Cloud Run
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      run: |
+        gcloud run deploy aiguard-app \
+          --port=8080 \
+          --image="us-central1-docker.pkg.dev/pk-aiproject/aiguard-repo/aiguard-app" \
+          --platform=managed \
+          --region="us-central1" \
+          --project="pk-aiproject" \
+          --allow-unauthenticated \
+          --set-env-vars=GCP_PROJECT=pk-aiproject,GCP_REGION=us-central1 \
+          --min-instances=0 \
+          --memory=1Gi 
+
+    - name: Get the url
+      if: steps.check_flag.outputs.should_deploy == 'true'
+      run: |
+        URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region ${{secrets.GCP_REGION}} --format="value(status.url)")
+        echo $URL | gsutil -h "Content-Type:text/plain" cp - gs://bkt-aiguard/latest_release.txt
+        gsutil acl ch -u AllUsers:R gs://bkt-aiguard/latest_release.txt
