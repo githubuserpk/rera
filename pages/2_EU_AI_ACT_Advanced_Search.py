@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import json
 
-from utils import aiguard_utils
+from utils import rera_utils
 
 # Add a "Back to Menu" link
 #st.page_link("Main.py", label="Back to Menu", icon="🏠")
@@ -62,7 +62,7 @@ def main():
 
         if st.button("Submit"):
             # Invoke ai api to get response
-            result = aiguard_utils.get_ai_response(query)
+            result = rera_utils.get_ai_response(query)
 
             # Display response 
             if result:  # Check if result is not None or empty

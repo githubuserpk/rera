@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import aiguard_utils
+from utils import rera_utils
 
 def display_title():
     st.title("AI Policies")

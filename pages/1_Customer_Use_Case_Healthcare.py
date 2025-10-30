@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import aiguard_utils
+from utils import rera_utils
 
 def display_title():
     st.title("Customer Use Case - Healthcare provider based in UK")
@@ -188,7 +188,7 @@ def main():
              
         if st.button("Submit"):            
             
-            result = aiguard_utils.get_recommendation(query)
+            result = rera_utils.get_recommendation(query)
 
             # Display response 
             if result:  # Check if result is not None or empty
