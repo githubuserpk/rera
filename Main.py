@@ -41,7 +41,7 @@ def add_footer():
         }
         </style>
         <div class="footer">
-            &copy; 2024 AIGard | All Rights Reserved
+            &copy; 2025 Rera | All Rights Reserved
         </div>
         """,
         unsafe_allow_html=True,
