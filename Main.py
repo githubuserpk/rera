@@ -108,12 +108,12 @@ def main():
 
 
     # Company name
-    #st.markdown('<div class="company-name" style="margin-bottom: 2px;">AIGard</div>', unsafe_allow_html=True)
+    #st.markdown('<div class="company-name" style="margin-bottom: 2px;">Rera</div>', unsafe_allow_html=True)
     #st.markdown('<div class="company-name" style="margin-bottom: 1px; border: 2px solid red;">Rera</div>', unsafe_allow_html=True)
 
 
     # Header with custom margin
-    st.markdown('<h1 style="margin-top: -30px; margin-bottom: 10px;">AIGard - Building Trustworthy AI Systems</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 style="margin-top: -30px; margin-bottom: 10px;">My Rera - Draft version v0.1 | Build in progress... </h1>', unsafe_allow_html=True)
 
 
 
