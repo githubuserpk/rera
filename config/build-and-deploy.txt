@@ -1,1 +1,1 @@
-build-and-deploy=yes
+build-and-deploy=no
