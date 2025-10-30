@@ -15,7 +15,7 @@ st.sidebar.title("AI Governance ")
 
 def display_document():
     # Specify the full path to the Word document
-    document_path = "Documents/AI_Adoption_Guide.docx"    
+    document_path = "Documents/RERA_REGULATIONS_2022.pdf"    
 
     if os.path.exists(document_path):
 
