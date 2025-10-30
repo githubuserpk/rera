@@ -79,7 +79,11 @@ jobs:
     - name: 'Build and Push Docker Image'
       if: steps.check_flag.outputs.should_deploy == 'true'
       run: |
-        gcloud builds submit --tag "${{secrets.GCP_REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.SERVICE_NAME }}"
+        gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+        gcloud builds submit --tag "us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.SERVICE_NAME }}" \
+          --project=${{ secrets.GCP_PROJECT_ID }}
+
+
 
     - name: Deploy to Cloud Run
       if: steps.check_flag.outputs.should_deploy == 'true'
